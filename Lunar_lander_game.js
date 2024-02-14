@@ -1,19 +1,18 @@
 let flameHeight;
 let animateFlame = false;
 let rocketY = 200;
-let rocketSpeed = 0.4;
-let fallAcceleration = 0.001;
-let lastKeyPressTime;
-let timeThresholdForSpeedChange = 1000;
-let groundY = 500;
+let rocketX = 210; // Initial horizontal position of the rocket
+let rocketSpeed = 1; // Adjusted the rocket speed for better responsiveness
+let fallAcceleration = 0.01;
+let groundY = 400;
 let gameStarted = false;
 let startButton;
 let rocketRotation = 0; // Initial rotation angle of the rocket
-let rotationSpeed = 0.8; // Speed of rotation
+let rotationSpeed = 1.5; // Speed of rotation
+let easing = 0.3;
 
 function setup() {
-    createCanvas(500, 500).style('border', '2px solid white');
-    lastKeyPressTime = millis();
+    createCanvas(500, 500).style('border','1px white');
 
     startButton = createButton('Start Game');
     startButton.position(width / 2 - 80, height / 2);
@@ -27,29 +26,32 @@ function draw() {
         checkRocketPosition();
         drawRocket();
         drawTerrain();
-        /* code adjusted from https://www.w3schools.com/graphics/canvas_text.asp*/
     } else {
         textAlign(CENTER);
         fill('white');
         textSize(10);
-        text("Press 'Start Game' to launch the rocket!", width / 2.5, height / 2 - 30);
+        text("Press 'Start Game' to begin!", width / 2.5, height / 2 - 50);
     }
 }
-//button for starting a game./* some of the names of functions were inspired by https://developer.mozilla.org/en-US/docs/Games/Tutorials/2D_breakout_game_Phaser/Buttons*/
+
 function startGame() {
     gameStarted = true;
     startButton.hide();
 }
-// collisive terrain(not yet a full object)
+
 function drawTerrain() {
     fill('grey');
     rect(0, 460, 500, 40);
+    rect(0,420,100,80);
+    rect(100,300,100,600);
+    rect(200,370,100,200);
+    rect(300,250,100,250);
 }
 
 function drawRocket() {
-    push(); // save the current transformation state
-    translate(210, rocketY); // move the origin to the rocket's position
-    rotate(radians(rocketRotation)); // rotate the rocket
+    push(); // Save the current transformation state
+    translate(rocketX, rocketY); // Move the origin to the rocket's position
+    rotate(radians(rocketRotation)); // Rotate the rocket
 
     // Body
     fill('white');
@@ -63,45 +65,60 @@ function drawRocket() {
     fill(176, 196, 222);
     ellipse(10, 10, 10);
 
-    // Flame effect when the UP key is pressed on and also start game function which will activate next step.
+    // Flame effect when the UP key is pressed on and also start game function which will activate the next step.
     if (gameStarted && keyIsDown(UP_ARROW)) {
         drawFlame(10, 40, 10);
     }
 
-    pop(); // Restore the previous transformation state
+    pop(); // Restore
 
-    // Update the rocket's rotation based on arrow keys
+    
     if (gameStarted) {
-        if (keyIsDown(RIGHT_ARROW)) {
+        // Immediate left or right movement when keys are pressed
+        if (keyIsDown(RIGHT_ARROW) && rocketX < width - 20) {
+            rocketX += rocketSpeed;
             rocketRotation += rotationSpeed;
         }
-        if (keyIsDown(LEFT_ARROW)) {
+        if (keyIsDown(LEFT_ARROW) && rocketX > 0) {
+            rocketX -= rocketSpeed;
             rocketRotation -= rotationSpeed;
         }
     }
 }
-// Rocket movement, after clicking start game button, added acceleration, so the rocket will fall faster when the arrows are not used.
+
 function checkRocketPosition() {
-    if (gameStarted && keyIsDown(UP_ARROW) && rocketY > 0) {
-        rocketY -= 5 * rocketSpeed;
-        lastKeyPressTime = millis();
+    if (gameStarted && keyIsDown(UP_ARROW) && rocketY > 1) {
+        rocketY -= 3 * rocketSpeed;
     } else if (gameStarted) {
-        let timeSinceKeyPress = millis() - lastKeyPressTime;
-        let adjustedFallSpeed = rocketSpeed + timeSinceKeyPress * fallAcceleration;
+        let adjustedFallSpeed = rocketSpeed + fallAcceleration;
 
         if (rocketY < groundY - 80) {
-            rocketY += 2 * adjustedFallSpeed;
+            rocketY += 3* adjustedFallSpeed;
         } else {
             rocketY = groundY - 80;
         }
     }
 }
-// function for flame, which will show up after pressing arrow keys.
+//flame coming out from the rocket when the UP arrow is pressed on.
 function drawFlame(x, y, size) {
     for (let i = 0; i < 5; i++) {
         let offsetX = random(-5, 5);
         let offsetY = random(-5, 5);
         fill('orange');
         ellipse(x + offsetX, y + offsetY, size, size);
+    }
+}
+
+function keyPressed() {
+    // left or right movement when keys are pressed
+    if (gameStarted) {
+        if (keyCode === RIGHT_ARROW && rocketX < width - 20) {
+            rocketX += rocketSpeed;
+            rocketRotation += rotationSpeed;
+        }
+        if (keyCode === LEFT_ARROW && rocketX > 0) {
+            rocketX -= rocketSpeed;
+            rocketRotation -= rotationSpeed;
+        }
     }
 }
