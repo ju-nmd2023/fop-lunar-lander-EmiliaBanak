@@ -1,11 +1,11 @@
 // Rocket setup
 let rocketY = 0;
 let rocketX = 200;
-let rocketSpeed = 0.001; // Initial speed of 20 units per frame
-let rocketVelocity = createVector(0.08); // Initial velocity vector
+let rocketSpeed = 0.001; //
+let rocketVelocity = createVector(0.08);
 
 // Rocket motion
-let rocketSpeedCaption = 1000;
+let rocketSpeedCaption = 100;
 let rocketRotation = 180;
 let rotationSpeed = 2;
 let fallAcceleration = 0.1;
@@ -75,11 +75,11 @@ function draw() {
         if (gameOver) {
             text("Game Over!\nYour speed was too high or fuel was too low.", width / 2, height / 2 - 50);
             resetButton.show();
-            adjustedFallSpeed = 1;
+            adjustedFallSpeed = 0.1;
         } else if (gameWon) {
             text("Congratulations!\nYou won!", width / 2, height / 2 - 50);
             resetButton.show();
-            adjustedFallSpeed = 1;
+            adjustedFallSpeed = 0.1;
         } else {
             textAlign(CENTER);
             fill(255, 255, 255);
