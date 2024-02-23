@@ -1,11 +1,11 @@
 // Rocket setup
 let rocketY = 0;
 let rocketX = 200;
-let rocketSpeed = 0.001; //
-let rocketVelocity = createVector(0.08);
+let rocketSpeed = 0.001; // Initial speed of 20 units per frame
+let rocketVelocity = createVector(0.08); // Initial velocity vector
 
 // Rocket motion
-let rocketSpeedCaption = 100;
+let rocketSpeedCaption = 1000;
 let rocketRotation = 180;
 let rotationSpeed = 2;
 let fallAcceleration = 0.1;
@@ -23,6 +23,7 @@ let gameStarted = false;
 let gameOver = false;
 let gameWon = false; 
 
+
 // Fuel
 let Fuel = 1000;
 let fuelConsumptionOnThrust = 4;
@@ -31,8 +32,11 @@ let fuelConsumptionOnThrust = 4;
 let breakThreshold = 2;
 
 // Creating canvas
-function Canvas() {
+function setup() {
     createCanvas(500, 500);
+    background('#001F3F');
+
+    
 }
 
 // Creating start button
@@ -45,6 +49,7 @@ resetButton = createButton('Reset');
 resetButton.position(width / 2 - 80, height / 2 + 50);
 resetButton.mousePressed(resetGame);
 resetButton.hide();
+
 
 // Show speed of rocket
 function drawSpeed() {
@@ -75,11 +80,11 @@ function draw() {
         if (gameOver) {
             text("Game Over!\nYour speed was too high or fuel was too low.", width / 2, height / 2 - 50);
             resetButton.show();
-            adjustedFallSpeed = 0.1;
+            adjustedFallSpeed = 1;
         } else if (gameWon) {
             text("Congratulations!\nYou won!", width / 2, height / 2 - 50);
             resetButton.show();
-            adjustedFallSpeed = 0.1;
+            adjustedFallSpeed = 1;
         } else {
             textAlign(CENTER);
             fill(255, 255, 255);
@@ -225,7 +230,7 @@ function rocketSideMovement() {
 function checkCollision() {
     if (rocketY + 80 >= groundY) {
         // Check if the rocket landed successfully
-        if (rocketSpeed <= 3 && rocketRotation <= 30 && rocketRotation >= 0) {
+        if (rocketSpeed <= 7) {
             gameWon = true;
         } else {
             gameOver = true;
