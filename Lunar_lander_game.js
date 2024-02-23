@@ -1,7 +1,7 @@
 //Rocket setup
 let rocketY = 0;
 let rocketX = 200;
-let rocketSpeed = 20/100; // Speed of 10 units per second
+let rocketSpeed = 20/60; // Speed of 20 units per second
 let rocketFallingSpeed = 0;
 
 //Rocket motion
@@ -10,7 +10,7 @@ let rocketRotation = 180;
 let rotationSpeed = 2;
 let fallAcceleration = 1;
 
-//Ground coordinants for colision
+//Ground coordinants for colision, where the rocket should land
 let groundY = 480;
 
 //Buttons
@@ -26,7 +26,7 @@ let gameWon = false;
 let Fuel = 500;
 let fuelConsumptionOnThrust = 3;
 
-//????
+//crash threshold
 let breakThreshold = 2;
 
 //Creating canvas
