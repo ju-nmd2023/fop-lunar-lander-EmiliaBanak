@@ -1,64 +1,65 @@
 // Rocket setup
 let rocketY = 0;
 let rocketX = 200;
-let rocketSpeed = 0.001; //
-let rocketVelocity = createVector(0,0);
-
+let rocketSpeed = 0.001;
+let rocketVelocity = null;
+ 
 // Rocket motion
 let rocketRotation = 180;
 let rotationSpeed = 2;
 let fallAcceleration = 0.1;
 let adjustedFallSpeed = 0.1;
-
+ 
 // Ground coordinates for collision
 let groundY = 480;
-
+ 
 // Buttons
 let startButton;
 let resetButton;
-
+ 
 // Game parts
 let gameStarted = false;
 let gameOver = false;
 let gameWon = false; 
-
+ 
 // Fuel
 let Fuel = 1000;
-let fuelConsumptionOnThrust = 4;
-
+let fuelConsumptionOnThrust = 3;
+ 
 // crash threshold
 let breakThreshold = 2;
-
-// Creating canvas
-function Canvas() {
+ 
+function setup() {
     createCanvas(500, 500);
+ 
+    rocketVelocity = createVector(0,0);
+ 
+    // Creating start button
+    startButton = createButton('Start Game');
+    startButton.position(width / 2 - 80, height / 2);
+    startButton.mousePressed(startGame);
+ 
+    // Creating reset button
+    resetButton = createButton('Reset');
+    resetButton.position(width / 2 - 80, height / 2 + 50);
+    resetButton.mousePressed(resetGame);
+    resetButton.hide();
 }
-
-// Creating start button
-startButton = createButton('Start Game');
-startButton.position(width / 2 - 80, height / 2);
-startButton.mousePressed(startGame);
-
-// Creating reset button
-resetButton = createButton('Reset');
-resetButton.position(width / 2 - 80, height / 2 + 50);
-resetButton.mousePressed(resetGame);
-resetButton.hide();
-
+ 
 // Show speed of rocket
 function drawSpeed() {
     fill(255, 255, 255);
     textSize(20);
     text("Speed: " + rocketSpeed.toFixed(0) + " units per frame", width - 180, 30);
 }
-
+ 
 // Show Fuel that is left, stops at 0
 function drawFuel() {
     fill(255, 255, 255);
     textSize(20);
     text("Fuel: " + Fuel.toFixed(0), width - 130, 60);
 }
-
+ 
 function draw() {
     background(0, 0, 41);
     if (gameStarted && !gameOver && !gameWon) {
@@ -89,13 +90,13 @@ function draw() {
         }
     }
 }
-
+ 
 // Function to start the game
 function startGame() {
     gameStarted = true;
     startButton.hide();
 }
-
+ 
 // Creating terrain
 function drawTerrain() {
     noStroke();
@@ -126,11 +127,11 @@ function drawTerrain() {
     ellipse(23, 270, 4);
     ellipse(455, 66, 3);
 }
-
+ 
 function fallingSpeed() {
     fallAcceleration = fallAcceleration + 0.1;
 }
-
+ 
 // Create a rocket
 function drawRocket() {
     push();
@@ -147,63 +148,63 @@ function drawRocket() {
     fill(176, 196, 222);
     ellipse(10, 10, 10);
     ellipse(10, 25, 10);
-
+ 
     // Flame when the UP or sides keys are pressed
     if (gameStarted && (keyIsDown(UP_ARROW) || keyIsDown(LEFT_ARROW) || keyIsDown(RIGHT_ARROW))) {
         drawFlame(10, 40, 15);
     }
     pop();
-
+ 
     if (gameStarted && !gameOver && !gameWon) {
         // Left or right movement when keys are pressed
     }
 }
-
+ 
 // Checking rocket position
-
+ 
 function RocketMovement() {
     if (gameStarted && (keyIsDown(UP_ARROW) || keyIsDown(DOWN_ARROW)) && rocketY > 1) {
         // Rocket movement up and fuel consumption 
         if (keyIsDown(UP_ARROW) && Fuel >= fuelConsumptionOnThrust) {
-            rocketVelocity.y -= 0.2; // Adjust this value for the desired thrust strength
+            rocketVelocity.y -= 0.05; // Adjust this value for the desired thrust strength
             Fuel -= fuelConsumptionOnThrust;
         }
     } else if (gameStarted) {
         // Gravity
         //the following 10 lines was adapted with https://chat.openai.com/
-        rocketVelocity.y += 0.08; 
-
+        rocketVelocity.y += 0.03; 
+ 
         // Update rocket position based on velocity
         rocketY += rocketVelocity.y;
-
+ 
         // Update speed measurement
         rocketSpeed = rocketVelocity.mag();
-
+ 
         if (rocketY < groundY - 80) {
             rocketY += 3 * adjustedFallSpeed;
         }
-
+ 
         if (rocketY >= groundY - 80) {
             if (rocketY > groundY - 80) {
                 rocketY = groundY - 80;
             }
-
+ 
             // Check if the rocket landed successfully
             if (Fuel > 0 && rocketSpeed <= 3 && rocketY === groundY - 80) {
                 gameWon = true;
             }
-
+ 
             if (rocketSpeed >= 3) {
                 gameOver = true;
             }
         }
-
+ 
         if (Fuel <= 0) {
             gameOver = true;
         }
     }
 }
-
+ 
 function rocketSideMovement() {
     if (gameStarted) {
         // IF for right arrow
@@ -219,7 +220,7 @@ function rocketSideMovement() {
         }
     }
 }
-
+ 
 // Checking collisions
 function checkCollision() {
     if (rocketY + 80 >= groundY) {
@@ -242,7 +243,7 @@ function drawFlame(x, y, size) {
         ellipse(x + offsetX, y + offsetY, size, size);
     }
 }
-
+ 
 // Resetting a game function
 function resetGame() {
     gameOver = false;
